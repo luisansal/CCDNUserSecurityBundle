@@ -21,16 +21,22 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  *
- * @author Reece Fowell <reece@codeconsortium.com>
- * @version 1.0
+ * @category CCDNUser
+ * @package  SecurityBundle
+ *
+ * @author   Reece Fowell <reece@codeconsortium.com>
+ * @license  http://opensource.org/licenses/MIT MIT
+ * @version  Release: 2.0
+ * @link     https://github.com/codeconsortium/CCDNUserSecurityBundle
+ *
  */
 class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
 {
     /**
      *
      * @access public
-     * @param \Symfony\Component\HttpFoundation\Request $request
-	 * @param \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $token
+     * @param  \Symfony\Component\HttpFoundation\Request                                                     $request
+     * @param  \Symfony\Component\Security\Core\Authentication\Token\TokenInterface                          $token
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token)
@@ -38,9 +44,7 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
         $session = $request->getSession();
 
         if ($session->has('referer')) {
-            if ($session->get('referer') !== null
-            && $session->get('referer') !== '')
-            {
+            if ($session->get('referer') !== null && $session->get('referer') !== '') {
                 $response = new RedirectResponse($session->get('referer'));
             } else {
                 $response = new RedirectResponse($request->getBasePath() . '/');

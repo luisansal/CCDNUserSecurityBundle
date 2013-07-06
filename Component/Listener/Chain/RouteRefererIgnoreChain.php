@@ -15,22 +15,28 @@ namespace CCDNUser\SecurityBundle\Component\Listener\Chain;
 
 /**
  *
- * @author Reece Fowell <reece@codeconsortium.com>
- * @version 1.0
+ * @category CCDNUser
+ * @package  SecurityBundle
+ *
+ * @author   Reece Fowell <reece@codeconsortium.com>
+ * @license  http://opensource.org/licenses/MIT MIT
+ * @version  Release: 2.0
+ * @link     https://github.com/codeconsortium/CCDNUserSecurityBundle
+ *
  */
 class RouteRefererIgnoreChain
 {
     /**
      *
-	 * @access private
-	 * @var array $chain
+     * @access private
+     * @var array $chain
      */
     private $chain;
 
-	/**
-	 *
-	 * @access public
-	 */
+    /**
+     *
+     * @access public
+     */
     public function __construct()
     {
         $this->chain = array();
@@ -38,28 +44,27 @@ class RouteRefererIgnoreChain
 
     /**
      *
- 	 * @access public
-	 * @param array $list
+      * @access public
+     * @param array $list
      */
     public function addRoutesToIgnore($list)
     {
-		$this->chain[] = $list;
+        $this->chain[] = $list;
     }
 
     /**
      *
- 	 * @access public
-	 * @return mixed[]
+      * @access public
+     * @return mixed[]
      */
     public function getRoutes()
     {
-		$ignore = array();
-		
-		foreach($this->chain as $object)
-		{
-			$ignore = array_merge($ignore, $object->getRoutes());
-		}
-		
-		return $ignore;
+        $ignore = array();
+
+        foreach ($this->chain as $object) {
+            $ignore = array_merge($ignore, $object->getRoutes());
+        }
+
+        return $ignore;
     }
 }

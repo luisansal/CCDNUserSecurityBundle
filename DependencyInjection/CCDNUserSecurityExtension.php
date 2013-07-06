@@ -23,13 +23,21 @@ use Symfony\Component\Config\FileLocator;
  *
  * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html}
  *
- * @author Reece Fowell <reece@codeconsortium.com>
- * @version 1.0
+ * @category CCDNUser
+ * @package  SecurityBundle
+ *
+ * @author   Reece Fowell <reece@codeconsortium.com>
+ * @license  http://opensource.org/licenses/MIT MIT
+ * @version  Release: 2.0
+ * @link     https://github.com/codeconsortium/CCDNUserSecurityBundle
+ *
  */
 class CCDNUserSecurityExtension extends Extension
 {
     /**
-     * {@inheritDoc}
+     *
+     * @access public
+     * @return string
      */
     public function getAlias()
     {
@@ -37,23 +45,32 @@ class CCDNUserSecurityExtension extends Extension
     }
 
     /**
-     * {@inheritDoc}
+     *
+     * @access public
+     * @param array                                                   $config
+     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
      */
     public function load(array $configs, ContainerBuilder $container)
     {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-		// Class file namespaces.
-        $this->getEntitySection($container, $config);
-        $this->getGatewaySection($container, $config);
-        $this->getManagerSection($container, $config);
-		
-		// Configuration stuff.
-        $this->getRouteRefererSection($container, $config);
-        $this->getLoginShieldSection($container, $config);
+        // Class file namespaces.
+        $this
+            ->getEntitySection($container, $config)
+            ->getRepositorySection($container, $config)
+            ->getGatewaySection($container, $config)
+            ->getManagerSection($container, $config)
+            ->getComponentSection($container, $config)
+        ;
 
-		// Load Service definitions.
+        // Configuration stuff.
+        $this
+            ->getRouteRefererSection($container, $config)
+            ->getLoginShieldSection($container, $config)
+        ;
+
+        // Load Service definitions.
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
     }
@@ -61,39 +78,91 @@ class CCDNUserSecurityExtension extends Extension
     /**
      *
      * @access private
-     * @param $container, $config
+     * @param  array                                                                  $config
+     * @param  \Symfony\Component\DependencyInjection\ContainerBuilder                $container
+     * @return \CCDNUser\SecurityBundle\DependencyInjection\CCDNUserSecurityExtension
      */
-    private function getEntitySection($container, $config)
+    private function getEntitySection(ContainerBuilder $container, $config)
     {
-        $container->setParameter('ccdn_user_security.entity.session.class', $config['entity']['session']['class']);				
-	}
-	
+        $container->setParameter('ccdn_user_security.entity.session.class', $config['entity']['session']['class']);
+
+        return $this;
+    }
+
     /**
      *
      * @access private
-     * @param $container, $config
+     * @param  array                                                                  $config
+     * @param  \Symfony\Component\DependencyInjection\ContainerBuilder                $container
+     * @return \CCDNUser\SecurityBundle\DependencyInjection\CCDNUserSecurityExtension
      */
-    private function getGatewaySection($container, $config)
+    private function getRepositorySection(ContainerBuilder $container, $config)
+    {
+        $container->setParameter('ccdn_user_security.repository.session.class', $config['repository']['session']['class']);
+
+        return $this;
+    }
+
+    /**
+     *
+     * @access private
+     * @param  array                                                                  $config
+     * @param  \Symfony\Component\DependencyInjection\ContainerBuilder                $container
+     * @return \CCDNUser\SecurityBundle\DependencyInjection\CCDNUserSecurityExtension
+     */
+    private function getGatewaySection(ContainerBuilder $container, $config)
     {
         $container->setParameter('ccdn_user_security.gateway.session.class', $config['gateway']['session']['class']);
-	}
-	
+
+        return $this;
+    }
+
     /**
      *
      * @access private
-     * @param $container, $config
+     * @param  array                                                                  $config
+     * @param  \Symfony\Component\DependencyInjection\ContainerBuilder                $container
+     * @return \CCDNUser\SecurityBundle\DependencyInjection\CCDNUserSecurityExtension
      */
-    private function getManagerSection($container, $config)
+    private function getManagerSection(ContainerBuilder $container, $config)
     {
-        $container->setParameter('ccdn_user_security.manager.session.class', $config['manager']['session']['class']);		
-	}
-	
+        $container->setParameter('ccdn_user_security.manager.session.class', $config['manager']['session']['class']);
+
+        return $this;
+    }
+
     /**
      *
      * @access private
-     * @param $container, $config
+     * @param  array                                                                  $config
+     * @param  \Symfony\Component\DependencyInjection\ContainerBuilder                $container
+     * @return \CCDNUser\SecurityBundle\DependencyInjection\CCDNUserSecurityExtension
      */
-    private function getRouteRefererSection($container, $config)
+    private function getComponentSection(ContainerBuilder $container, $config)
+    {
+        $container->setParameter('ccdn_user_security.component.authentication.handler.login_failure_handler.class', $config['component']['authentication']['handler']['login_failure_handler']['class']);
+        $container->setParameter('ccdn_user_security.component.authentication.handler.login_success_handler.class', $config['component']['authentication']['handler']['login_success_handler']['class']);
+        $container->setParameter('ccdn_user_security.component.authentication.handler.logout_success_handler.class', $config['component']['authentication']['handler']['logout_success_handler']['class']);
+        $container->setParameter('ccdn_user_security.component.authentication.tracker.login_failure_tracker.class', $config['component']['authentication']['tracker']['login_failure_tracker']['class']);
+
+        $container->setParameter('ccdn_user_security.component.authorisation.voter.client_login_voter.class', $config['component']['authorisation']['voter']['client_login_voter']['class']);
+
+        $container->setParameter('ccdn_user_security.component.listener.route_referer_listener.class', $config['component']['listener']['route_referer_listener']['class']);
+        $container->setParameter('ccdn_user_security.component.listener.blocking_login_listener.class', $config['component']['listener']['blocking_login_listener']['class']);
+
+        $container->setParameter('ccdn_user_security.component.route_referer_ignore.chain.class', $config['component']['route_referer_ignore']['chain']['class']);
+
+        return $this;
+    }
+
+    /**
+     *
+     * @access private
+     * @param  array                                                                  $config
+     * @param  \Symfony\Component\DependencyInjection\ContainerBuilder                $container
+     * @return \CCDNUser\SecurityBundle\DependencyInjection\CCDNUserSecurityExtension
+     */
+    private function getRouteRefererSection(ContainerBuilder $container, $config)
     {
         $defaults = array(
             array('bundle' => 'fosuserbundle', 'route' => 'fos_user_security_login'),
@@ -108,18 +177,21 @@ class CCDNUserSecurityExtension extends Extension
             array('bundle' => 'fosuserbundle', 'route' => 'fos_user_resetting_check_email'),
             array('bundle' => 'fosuserbundle', 'route' => 'fos_user_resetting_reset'),
             array('bundle' => 'fosuserbundle', 'route' => 'fos_user_change_password'),
-
         );
 
         $container->setParameter('ccdn_user_security.route_referer.route_ignore_list', array_merge($config['route_referer']['route_ignore_list'], $defaults));
+
+        return $this;
     }
 
     /**
      *
      * @access private
-     * @param $container, $config
+     * @param  array                                                                  $config
+     * @param  \Symfony\Component\DependencyInjection\ContainerBuilder                $container
+     * @return \CCDNUser\SecurityBundle\DependencyInjection\CCDNUserSecurityExtension
      */
-    private function getLoginShieldSection($container, $config)
+    private function getLoginShieldSection(ContainerBuilder $container, $config)
     {
         $container->setParameter('ccdn_user_security.login_shield.enable_shield', $config['login_shield']['enable_shield']);
         $container->setParameter('ccdn_user_security.login_shield.block_for_minutes', $config['login_shield']['block_for_minutes']);
@@ -139,5 +211,7 @@ class CCDNUserSecurityExtension extends Extension
         );
 
         $container->setParameter('ccdn_user_security.login_shield.block_routes_when_denied', array_merge($config['login_shield']['block_routes_when_denied'], $blockRoutesWhenDeniedDefaults));
+
+        return $this;
     }
 }

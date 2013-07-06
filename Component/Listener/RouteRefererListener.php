@@ -19,36 +19,42 @@ use CCDNUser\SecurityBundle\Component\Listener\Chain\RouteRefererIgnoreChain;
 
 /**
  *
- * @author Reece Fowell <reece@codeconsortium.com>
- * @version 1.0
+ * @category CCDNUser
+ * @package  SecurityBundle
+ *
+ * @author   Reece Fowell <reece@codeconsortium.com>
+ * @license  http://opensource.org/licenses/MIT MIT
+ * @version  Release: 2.0
+ * @link     https://github.com/codeconsortium/CCDNUserSecurityBundle
+ *
  */
 class RouteRefererListener
 {
-	/**
-	 *
-	 * @access protected
-	 * @var \Symfony\Bundle\FrameworkBundle\Routing\Router $router
-	 */
+    /**
+     *
+     * @access protected
+     * @var \Symfony\Bundle\FrameworkBundle\Routing\Router $router
+     */
     protected $router;
-	
-	/**
-	 *
-	 * @access protected
-	 * @var \CCDNUser\SecurityBundle\Component\Listener\Chain\RouteRefererIgnoreChain $routeIgnoreChain
-	 */
+
+    /**
+     *
+     * @access protected
+     * @var \CCDNUser\SecurityBundle\Component\Listener\Chain\RouteRefererIgnoreChain $routeIgnoreChain
+     */
     protected $routeIgnoreChain;
-	
-	/**
-	 *
-	 * @access protected
-	 * @var array $routeIgnoreList
-	 */
+
+    /**
+     *
+     * @access protected
+     * @var array $routeIgnoreList
+     */
     protected $routeIgnoreList;
 
     /**
-     * @param \Symfony\Bundle\FrameworkBundle\Routing\Router $router
+     * @param \Symfony\Bundle\FrameworkBundle\Routing\Router                            $router
      * @param \CCDNUser\SecurityBundle\Component\Listener\Chain\RouteRefererIgnoreChain $routeIgnoreChain
-     * @param array $routeIgnoreList
+     * @param array                                                                     $routeIgnoreList
      */
     public function __construct(Router $router, RouteRefererIgnoreChain $routeIgnoreChain, $routeIgnoreList)
     {
@@ -80,22 +86,26 @@ class RouteRefererListener
         // Get the list of routes we must ignore.
         $logIgnore = $this->routeIgnoreList;
 
-		$routeIgnoreChain = $this->routeIgnoreChain;
-		
-		$ignorable = is_array($routeIgnoreChain) ? array_merge($routeIgnoreChain, $logIgnore) : $logIgnore;
-		
+        $routeIgnoreChain = $this->routeIgnoreChain;
+
+        $ignorable = is_array($routeIgnoreChain) ? array_merge($routeIgnoreChain, $logIgnore) : $logIgnore;
+
         // Abort if the route is ignorable.
         foreach ($ignorable as $ignore) {
-            if ($route == $ignore['route']) { return; }
+            if ($route == $ignore['route']) {
+                return;
+            }
         }
 
         // Check for any internal routes.
-        if ($route[0] == '_') { return; }
+        if ($route[0] == '_') {
+            return;
+        }
 
         // Get the session and assign it the url we are at presently.
         $session = $request->getSession();
 
-		$script = ($request->getScriptName() == $request->getBasePath() . '/app_dev.php') ? $request->getScriptName() : $request->getBasePath();
+        $script = ($request->getScriptName() == $request->getBasePath() . '/app_dev.php') ? $request->getScriptName() : $request->getBasePath();
 
         $session->set('referer', $script . $request->getPathInfo());
     }

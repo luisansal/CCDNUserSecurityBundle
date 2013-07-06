@@ -20,14 +20,21 @@ use CCDNUser\SecurityBundle\DependencyInjection\Compiler\RouteRefererIgnoreCompi
 
 /**
  *
- * @author Reece Fowell <reece@codeconsortium.com>
- * @version 1.0
+ * @category CCDNUser
+ * @package  SecurityBundle
+ *
+ * @author   Reece Fowell <reece@codeconsortium.com>
+ * @license  http://opensource.org/licenses/MIT MIT
+ * @version  Release: 1.0
+ * @link     https://github.com/codeconsortium/CCDNUserSecurityBundle
+ *
  */
 class CCDNUserSecurityBundle extends Bundle
 {
-		
     /**
      *
+     * @access public
+     * @param Symfony\Component\DependencyInjection\ContainerBuilder $container
      */
     public function build(ContainerBuilder $container)
     {
@@ -35,5 +42,4 @@ class CCDNUserSecurityBundle extends Bundle
 
         $container->addCompilerPass(new RouteRefererIgnoreCompilerPass());
     }
-
 }
